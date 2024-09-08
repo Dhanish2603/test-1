@@ -8,4 +8,5 @@ abstract class LocationModuleSpec internal constructor(context: ReactApplication
   ReactContextBaseJavaModule(context) {
 
   abstract fun multiply(a: Double, b: Double, promise: Promise)
+  abstract fun locationfind(promise: Promise)
 }

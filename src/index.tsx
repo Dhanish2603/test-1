@@ -27,3 +27,7 @@ const LocationModule = LocationModuleModule
 export function multiply(a: number, b: number): Promise<number> {
   return LocationModule.multiply(a, b);
 }
+
+export function locationfind(): Promise<any> {
+  return LocationModule.locationfind();
+}
