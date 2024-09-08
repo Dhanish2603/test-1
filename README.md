@@ -10,7 +10,6 @@ npm install react-native-location-module
 
 ## Usage
 
-
 ```js
 import { multiply } from 'react-native-location-module';
 
@@ -18,7 +17,6 @@ import { multiply } from 'react-native-location-module';
 
 const result = await multiply(3, 7);
 ```
-
 
 ## Contributing
 

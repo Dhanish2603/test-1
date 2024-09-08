@@ -20,7 +20,7 @@ export default function App() {
         'android.permission.ACCESS_FINE_LOCATION',
         'android.permission.ACCESS_COARSE_LOCATION',
         'android.permission.ACCESS_BACKGROUND_LOCATION',
-        "android.permission.ACCESS_MEDIA_LOCATION"
+        'android.permission.ACCESS_MEDIA_LOCATION',
       ]);
       console.log('Rs', res);
       const data = await locationfind();
