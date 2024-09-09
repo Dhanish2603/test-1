@@ -1,6 +1,6 @@
 {
   "name": "react-native-location-module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "my own package",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",

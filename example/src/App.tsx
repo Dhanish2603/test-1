@@ -6,13 +6,13 @@ import {
   Button,
   PermissionsAndroid,
 } from 'react-native';
-import { multiply, locationfind } from 'react-native-location-module';
+import {  locationfind } from 'react-native-location-module';
 
 export default function App() {
-  const [result, setResult] = useState<number | undefined>();
+  const [result, setResult] = useState<string>();
 
   useEffect(() => {
-    multiply(3, 7).then(setResult);
+    // multiply(3, 7).then(setResult);
   }, []);
   const find = async () => {
     try {
@@ -25,8 +25,10 @@ export default function App() {
       console.log('Rs', res);
       const data = await locationfind();
       console.log(data);
+      setResult(JSON.stringify(data))
     } catch (error) {
       console.log('error', error);
+      setResult(JSON.stringify(error))
     }
   };
 

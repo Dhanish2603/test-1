@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
@@ -42,17 +44,58 @@ class LocationModuleModule internal constructor(context: ReactApplicationContext
       return
     }
 
-    val location: Location? = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-    if (location != null) {
-      val result: WritableMap = Arguments.createMap()
-      result.putDouble("latitude", location.latitude)
-      result.putDouble("longitude", location.longitude)
-      promise.resolve(result)
-    } else {
-      promise.reject("LOCATION_UNAVAILABLE", "Unable to get location")
+    when {
+      networkEnabled -> requestLocationUpdates(locationManager, LocationManager.NETWORK_PROVIDER, promise)
+      gpsEnabled -> requestLocationUpdates(locationManager, LocationManager.GPS_PROVIDER, promise)
+      else -> {
+        val lastKnownLocation: Location? = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+        if (lastKnownLocation != null) {
+          resolveLocation(lastKnownLocation, promise)
+        } else {
+          promise.reject("LOCATION_UNAVAILABLE", "Unable to get location and no last known location available")
+        }
+      }
     }
+  }
+
+  private fun requestLocationUpdates(locationManager: LocationManager, provider: String, promise: Promise) {
+    val locationListener = object : LocationListener {
+      override fun onLocationChanged(location: Location) {
+        locationManager.removeUpdates(this)
+        resolveLocation(location, promise)
+      }
+
+      override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+      override fun onProviderEnabled(provider: String) {}
+      override fun onProviderDisabled(provider: String) {}
+    }
+
+    locationManager.requestLocationUpdates(provider, 0L, 0f, locationListener)
+
+    // Set a timeout in case we can't get a location update
+    reactContext.runOnUiQueueThread {
+      android.os.Handler().postDelayed({
+        locationManager.removeUpdates(locationListener)
+        val lastKnownLocation = locationManager.getLastKnownLocation(provider)
+        if (lastKnownLocation != null) {
+          resolveLocation(lastKnownLocation, promise)
+        } else {
+          promise.reject("LOCATION_UNAVAILABLE", "Unable to get location update and no last known location available")
+        }
+      }, 30000) // 30 second timeout
+    }
+  }
+
+  private fun resolveLocation(location: Location, promise: Promise) {
+    val result: WritableMap = Arguments.createMap()
+    result.putDouble("latitude", location.latitude)
+    result.putDouble("longitude", location.longitude)
+    promise.resolve(result)
   }
 
   companion object {
