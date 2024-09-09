@@ -6,7 +6,7 @@ import {
   Button,
   PermissionsAndroid,
 } from 'react-native';
-import {  locationfind } from 'react-native-location-module';
+import { locationfind } from 'react-native-location-module';
 
 export default function App() {
   const [result, setResult] = useState<string>();
@@ -25,10 +25,10 @@ export default function App() {
       console.log('Rs', res);
       const data = await locationfind();
       console.log(data);
-      setResult(JSON.stringify(data))
+      setResult(JSON.stringify(data));
     } catch (error) {
       console.log('error', error);
-      setResult(JSON.stringify(error))
+      setResult(JSON.stringify(error));
     }
   };
 
