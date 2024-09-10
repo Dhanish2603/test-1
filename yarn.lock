@@ -2441,7 +2441,7 @@ camelcase@^7.0.1:
   version "7.0.1"
 
 caniuse-lite@^1.0.30001646:
-  version "1.0.30001659"
+  version "1.0.30001660"
 
 chalk@^2.4.2:
   version "2.4.2"
@@ -6585,7 +6585,7 @@ serialize-error@^2.1.0:
   version "2.1.0"
 
 serve-static@^1.13.1:
-  version "1.15.0"
+  version "1.16.0"
   dependencies:
     encodeurl "~1.0.2"
     escape-html "~1.0.3"
